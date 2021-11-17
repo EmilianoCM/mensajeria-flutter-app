@@ -1,4 +1,6 @@
+import 'package:chat_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:chat_app/models/usuario.dart';
 
@@ -15,19 +17,28 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   final usuarios = [
     Usuario(
-        online: true, email: 'test1@test.com', nombre: 'Emiliano', uid: '1'),
-    Usuario(online: false, email: 'test2@test.com', nombre: 'Nahuel', uid: '2'),
-    Usuario(online: true, email: 'test3@test.com', nombre: 'Martina', uid: '3'),
+        online: "true", email: 'test1@test.com', nombre: 'Emiliano', uid: '1'),
+    Usuario(
+        online: "false", email: 'test2@test.com', nombre: 'Nahuel', uid: '2'),
+    Usuario(
+        online: "true", email: 'test3@test.com', nombre: 'Martina', uid: '3'),
   ];
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+    final usuario = authService.usuario;
+
     return Scaffold(
         appBar: AppBar(
           elevation: 1,
           backgroundColor: Colors.white,
           leading: IconButton(
             icon: const Icon(Icons.exit_to_app, color: Colors.black54),
-            onPressed: () {},
+            onPressed: () {
+              //TODO Desconectarnos del socket server
+              Navigator.pushReplacementNamed(context, 'login');
+              AuthService.deleteToken();
+            },
           ),
           actions: [
             Container(
@@ -43,8 +54,8 @@ class _UsuariosPageState extends State<UsuariosPage> {
             )
           ],
           title: Text(
-            'NombreUsuario',
-            style: TextStyle(color: Colors.black54),
+            usuario!.nombre,
+            style: const TextStyle(color: Colors.black54),
           ),
         ),
         body: SmartRefresher(
@@ -80,7 +91,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
         width: 10,
         height: 10,
         decoration: BoxDecoration(
-            color: usuario.online ? Colors.green[300] : Colors.red,
+            color: usuario.online == "true" ? Colors.green[300] : Colors.red,
             borderRadius: BorderRadius.circular(100)),
       ),
     );

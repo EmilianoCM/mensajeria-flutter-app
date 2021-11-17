@@ -1,8 +1,11 @@
+import 'package:chat_app/helpers/mostrar_alerta_helpers.dart';
+import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/widgets/boton_azul_widget.dart';
 import 'package:chat_app/widgets/custom_input_widget.dart';
 import 'package:chat_app/widgets/labels_widget.dart';
 import 'package:chat_app/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RegistroPage extends StatelessWidget {
   const RegistroPage({Key? key}) : super(key: key);
@@ -53,6 +56,8 @@ class __FormularioState extends State<_Formulario> {
   final passController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -77,7 +82,23 @@ class __FormularioState extends State<_Formulario> {
             // keyboardType: TextInputType.,
             textController: passController,
           ),
-          BotonAzul(text: 'Registrar', onPressed: () {})
+          BotonAzul(
+              text: 'Registrar',
+              onPressed: authService.autenticando
+                  ? () {}
+                  : () async {
+                      final registroOk = await authService.registro(
+                          nameController.text.trim(),
+                          emailController.text.trim(),
+                          passController.text.trim());
+
+                      if (registroOk == true) {
+                        Navigator.pushReplacementNamed(context, 'usuarios');
+                      } else {
+                        mostrarAlerta(
+                            context, 'Registro Incorrecto', registroOk);
+                      }
+                    })
         ],
       ),
     );
