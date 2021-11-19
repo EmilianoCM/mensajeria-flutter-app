@@ -14,7 +14,7 @@ class Usuario {
 
   String nombre;
   String email;
-  String online;
+  bool online;
   String uid;
 
   factory Usuario.fromJson(Map<String, dynamic> json) => Usuario(

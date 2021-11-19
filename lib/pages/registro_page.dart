@@ -1,5 +1,6 @@
 import 'package:chat_app/helpers/mostrar_alerta_helpers.dart';
 import 'package:chat_app/services/auth_service.dart';
+import 'package:chat_app/services/socket_service.dart';
 import 'package:chat_app/widgets/boton_azul_widget.dart';
 import 'package:chat_app/widgets/custom_input_widget.dart';
 import 'package:chat_app/widgets/labels_widget.dart';
@@ -57,6 +58,7 @@ class __FormularioState extends State<_Formulario> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -93,6 +95,7 @@ class __FormularioState extends State<_Formulario> {
                           passController.text.trim());
 
                       if (registroOk == true) {
+                        socketService.conectar();
                         Navigator.pushReplacementNamed(context, 'usuarios');
                       } else {
                         mostrarAlerta(

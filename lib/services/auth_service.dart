@@ -12,24 +12,24 @@ class AuthService with ChangeNotifier {
   bool _autenticando = false;
 
   //Paquete para guardar el token
-  final _storage = FlutterSecureStorage();
+  final _storage = const FlutterSecureStorage();
 
   bool get autenticando => _autenticando;
 
   set autenticando(bool valor) {
-    _autenticando = valor;
+    _autenticando == valor;
     notifyListeners();
   }
 
   //Getters del token de forma estatica
   static Future<String?> getToken() async {
-    final _storage = FlutterSecureStorage();
+    const _storage = FlutterSecureStorage();
     final token = await _storage.read(key: 'token');
     return token;
   }
 
   static Future<void> deleteToken() async {
-    final _storage = FlutterSecureStorage();
+    const _storage = FlutterSecureStorage();
     await _storage.delete(key: 'token');
   }
 
@@ -67,6 +67,7 @@ class AuthService with ChangeNotifier {
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
     autenticando = false;
+
     if (resp.statusCode == 200) {
       final loginResponse = loginRespuestaFromJson(resp.body);
       usuario = loginResponse.usuario;
@@ -87,8 +88,10 @@ class AuthService with ChangeNotifier {
 
     final uri = Uri.parse('${Enviroment.apiUrl}/login/renew');
 
-    final resp = await http.get(uri,
-        headers: {'Content-Type': 'application/json', 'x-token': token!});
+    final resp = await http.get(uri, headers: {
+      'Content-Type': 'application/json',
+      'x-token': token.toString()
+    });
 
     if (resp.statusCode == 200) {
       final loginResponse = loginRespuestaFromJson(resp.body);

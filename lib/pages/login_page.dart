@@ -1,4 +1,5 @@
 import 'package:chat_app/helpers/mostrar_alerta_helpers.dart';
+import 'package:chat_app/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -57,6 +58,7 @@ class __FormularioState extends State<_Formulario> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -93,7 +95,7 @@ class __FormularioState extends State<_Formulario> {
                           passController.text.trim());
 
                       if (loginOk) {
-                        //TODO: CONECTAR AL SOCKET
+                        socketService.conectar();
                         Navigator.pushReplacementNamed(context, 'usuarios');
                       } else {
                         mostrarAlerta(context, 'Login Incorrecto',
